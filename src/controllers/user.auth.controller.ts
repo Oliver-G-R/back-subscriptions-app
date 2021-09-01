@@ -51,7 +51,7 @@ const signIn = async (req:Request, res:Response):Promise<Response> => {
         if(isMatch){
             const token:string = createToken(user)
 
-            res.header('auth-token', token)
+            res.header('Authorization', `Bearer ${token} `)
 
             return res.status(201).json(user)
 
