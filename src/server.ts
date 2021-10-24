@@ -7,6 +7,7 @@ import passportMiddleware from './middlewares/pasport'
 //Import routes
 import { UserRouter } from './routes/auth.routes'
 import { subscriptionsRoutes } from './routes/secure/subscriptions.routes'
+import { controlUserRouter } from './routes/secure/user.control.routes'
 
 //Iniciando express
 const app = express()
@@ -16,8 +17,8 @@ app.set('port', process.env.PORT || 3000)
 
 //Usando middlewares
 app.use(morgan('dev'))
-app.use(cors({exposedHeaders: 'Authorization'}))
-app.use(express.urlencoded({extended: false}))
+app.use(cors({ exposedHeaders: 'Authorization' }))
+app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 passport.use(passportMiddleware)
 
@@ -30,5 +31,6 @@ app.use('/User', UserRouter)
 
 /* Rutas protegidas */
 app.use('/subscriptions', subscriptionsRoutes)
+app.use('/userControll', controlUserRouter)
 
 export default app 
