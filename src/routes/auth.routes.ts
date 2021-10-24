@@ -5,7 +5,7 @@ const router = Router()
 import { showErrors, createValidationForRoute } from '../validations/validationsUserAuth'
 
 /* Controladores */
-import { signIn, signUp, signOut } from '../controllers/user.auth.controller'
+import { signIn, signUp, signOut, forgotPassword, resetPassword } from '../controllers/user.auth.controller'
 
 /* 
     createValidationForRoute(...) se encarga de cargar todas las validaciones que tenga cada ruta,
@@ -29,5 +29,15 @@ router.route('/SignIn')
 
 router.route('/SignOut')
     .get(signOut)
+
+router.route('/ForgotPassword')
+    .post(
+        createValidationForRoute('ForgotPassword'),
+        showErrors,
+        forgotPassword
+    )
+
+router.route('/ResetPassword/:token')
+    .patch(resetPassword)
 
 export { router as UserRouter }

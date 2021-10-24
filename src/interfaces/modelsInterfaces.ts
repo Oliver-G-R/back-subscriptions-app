@@ -5,8 +5,12 @@ export interface IUser extends Document {
     password: string
     name: string
     lastName: string
+    passwordChangedAt: Date
+    passwordResetToken: String | undefined
+    passwordResetExpires: Date | undefined | number
     comparePassword: (password: string) => Promise<Boolean>
     encryptPassword: (password: string) => Promise<string>
+    createRandomToken: () => string
 }
 
 export interface ISubscriptions {

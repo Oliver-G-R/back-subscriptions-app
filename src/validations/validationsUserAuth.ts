@@ -3,7 +3,7 @@ import { check, ValidationChain, validationResult} from 'express-validator'
 import { NextFunction, Request, Response } from 'express'
 
 //Rutas que solo se pueden leer en este archivo para mandar las respectivas funciones de validación
-type TRoute = 'SignIn' | 'SignUp'
+type TRoute = 'SignIn' | 'SignUp' | 'ForgotPassword' | 'UpdateEmail'
 
 //Array con las validaciones
 const validateSignIn:ValidationChain[] = [
@@ -29,6 +29,16 @@ const validateSignUp:ValidationChain[] = [
 
 ]
 
+const validateEmail:ValidationChain[] = [
+    check('email')
+        .isLength({ min: 3, max: 34 })
+        .withMessage('The maximum is 34 characters and the minimum 3')
+        .trim()
+        .matches(/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+        )
+        .withMessage('That is not a valid email')
+]
+
 //Los errores se muestran en un array dando un código de error
 const showErrors = (req:Request, res:Response, next:NextFunction) => {
     const error = validationResult(req).formatWith(({ msg }) => msg)
@@ -44,6 +54,8 @@ const createValidationForRoute = (route:TRoute):ValidationChain[] => {
     const routeOptions = {
         SignIn: validateSignIn,
         SignUp: validateSignUp,
+        ForgotPassword: validateEmail,
+        UpdateEmail: validateEmail
     }
 
     return routeOptions[route]

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 const { Schema, model } = mongoose
+import crypto from 'crypto'
 import bcrypt from 'bcrypt'
 
 import { IUser } from './../interfaces/modelsInterfaces';
@@ -15,6 +16,10 @@ const UserSchema = new Schema<IUser>({
         trim: true
     },
     password: requiredString,
+    passwordChangedAt: Date,
+    passwordResetToken: String || undefined,
+    passwordResetExpires: Date || undefined || Number
+
 }, {
     versionKey: false,
     timestamps: true,
@@ -46,6 +51,18 @@ UserSchema.methods.encryptPassword = async function (password: string): Promise<
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(password, salt)
     return hash
+}
+
+UserSchema.methods.createRandomToken = function (): string {
+    const resetToken = crypto.randomBytes(32).toString('hex')
+    this.passwordResetToken =  crypto
+        .createHash('sha256')
+        .update(resetToken)
+        .digest('hex')
+    console.log({resetToken} , this.passwordResetToken)
+    this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000)
+
+    return resetToken
 }
 
 /* 
